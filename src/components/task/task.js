@@ -1,7 +1,8 @@
 import React from 'react';
 import "./task.css";
 
-const Task = () => {
+const Task = (props) => {
+    /* черех props.allTasksToTask можно получить все дела */
     return (
         <li> {/* добавить класс */}
             <div className='view'>

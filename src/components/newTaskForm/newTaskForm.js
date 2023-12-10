@@ -1,5 +1,6 @@
 import React from 'react';
 import "./newTaskForm.css";
+import allTasks from '../app'
 
 const NewTaskForm = () => {
     return (

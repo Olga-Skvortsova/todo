@@ -2,10 +2,10 @@ import React from 'react';
 import "./taskList.css";
 import Task from '../task'
 
-const TaskList = () => {
+const TaskList = (props) => {
     return (
         <ul className='todo-list'>
-            <Task />
+            <Task allTasksToTask={props.allTasks} />
         </ul>
     )
 } 
