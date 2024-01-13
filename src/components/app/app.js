@@ -1,8 +1,8 @@
-import React from 'react';
-import './app.css';
-import NewTaskForm from '../newTaskForm';
-import TaskList from '../taskList';
-import Footer from '../footer';
+import React from "react";
+import "./app.css";
+import NewTaskForm from "../newTaskForm";
+import TaskList from "../taskList";
+import Footer from "../footer";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -15,8 +15,12 @@ export default class App extends React.Component {
 
   addNewTaskForm = (label) => {
     const el = this.createTodoItem(label);
-    this.setState(({ todoData, noFiltertodoData }) => { /* устанавливается новый стейт */
-      const newArr = [...todoData, el]; /* новый стейт это старый стейт + новый элемент */
+    this.setState(({ todoData, noFiltertodoData }) => {
+      /* устанавливается новый стейт */
+      const newArr = [
+        ...todoData,
+        el,
+      ]; /* новый стейт это старый стейт + новый элемент */
       return {
         todoData: newArr,
         noFiltertodoData: newArr,
@@ -24,14 +28,20 @@ export default class App extends React.Component {
     });
   };
 
-  deleteItem = (id) => { /* получает в TaskList id элемента */
+  deleteItem = (id) => {
+    /* получает в TaskList id элемента */
     this.setState(({ todoData, noFiltertodoData }) => {
       const index = todoData.findIndex((el) => el.id === id);
-      const before = todoData.slice(0, index); /* создается массив из элементов до удаленного */
-      const after = todoData.slice(index + 1); /* создается массив после удаленного */
+      const before = todoData.slice(
+        0,
+        index,
+      ); /* создается массив из элементов до удаленного */
+      const after = todoData.slice(
+        index + 1,
+      ); /* создается массив после удаленного */
       const newArray = [...before, ...after];
       return {
-        todoData: newArray, /* возвращается в state новый массив todoData */
+        todoData: newArray /* возвращается в state новый массив todoData */,
         noFiltertodoData: newArray,
       };
     });
@@ -46,10 +56,12 @@ export default class App extends React.Component {
         label: label2,
       };
       const before = noFiltertodoData.slice(0, index);
-      const after = noFiltertodoData.slice(index + 1); /* создается массив после удаленного */
+      const after = noFiltertodoData.slice(
+        index + 1,
+      ); /* создается массив после удаленного */
       const newArray = [...before, newItem, ...after];
       return {
-        todoData: newArray, /* возвращается в state новый массив todoData */
+        todoData: newArray /* возвращается в state новый массив todoData */,
         noFiltertodoData: newArray,
       };
     });
@@ -60,13 +72,14 @@ export default class App extends React.Component {
       let newArray = [...todoData];
       newArray = noFiltertodoData.filter((el) => !el.done);
       return {
-        todoData: newArray, /* возвращается в state новый массив todoData */
+        todoData: newArray /* возвращается в state новый массив todoData */,
         noFiltertodoData: newArray,
       };
     });
   };
 
-  onToggleDone = (id) => { /* изменяет done */
+  onToggleDone = (id) => {
+    /* изменяет done */
     this.setState(({ todoData, noFiltertodoData }) => {
       const index = todoData.findIndex((el) => el.id === id);
       const oldItem = todoData[index];
@@ -85,10 +98,11 @@ export default class App extends React.Component {
   };
 
   allFilter = () => {
-    const allFilters = document.getElementsByClassName('filters')[0].children[0].childNodes;
-    allFilters[0].classList.add('selected');
-    allFilters[1].classList.remove('selected');
-    allFilters[2].classList.remove('selected');
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.add("selected");
+    allFilters[1].classList.remove("selected");
+    allFilters[2].classList.remove("selected");
 
     this.setState(({ todoData, noFiltertodoData }) => {
       const newArr = structuredClone(noFiltertodoData);
@@ -99,10 +113,11 @@ export default class App extends React.Component {
   };
 
   activeFilter = () => {
-    const allFilters = document.getElementsByClassName('filters')[0].children[0].childNodes;
-    allFilters[0].classList.remove('selected');
-    allFilters[1].classList.add('selected');
-    allFilters[2].classList.remove('selected');
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.remove("selected");
+    allFilters[1].classList.add("selected");
+    allFilters[2].classList.remove("selected");
     this.setState(({ todoData, noFiltertodoData }) => {
       const activeFiltered = noFiltertodoData.filter((el) => !el.done);
       return {
@@ -112,10 +127,11 @@ export default class App extends React.Component {
   };
 
   competedFilter = () => {
-    const allFilters = document.getElementsByClassName('filters')[0].children[0].childNodes;
-    allFilters[0].classList.remove('selected');
-    allFilters[1].classList.remove('selected');
-    allFilters[2].classList.add('selected');
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.remove("selected");
+    allFilters[1].classList.remove("selected");
+    allFilters[2].classList.add("selected");
     this.setState(({ todoData, noFiltertodoData }) => {
       const competedFilter = noFiltertodoData.filter((el) => el.done);
       return {
@@ -134,13 +150,12 @@ export default class App extends React.Component {
 
   render() {
     const { todoData, noFiltertodoData } = this.state;
-    const todoCount = noFiltertodoData.length - noFiltertodoData.filter((el) => el.done).length;
+    const todoCount =
+      noFiltertodoData.length - noFiltertodoData.filter((el) => el.done).length;
 
     return (
       <section className="todoapp">
-        <NewTaskForm
-          sendNewTaskForm={this.addNewTaskForm}
-        />
+        <NewTaskForm sendNewTaskForm={this.addNewTaskForm} />
         <section className="main">
           <TaskList
             todos={todoData}

@@ -1,20 +1,20 @@
-import React from 'react';
-import './task.css';
-import { formatDistanceToNow } from 'date-fns';
-import PropTypes from 'prop-types';
+import React from "react";
+import "./task.css";
+import { formatDistanceToNow } from "date-fns";
+import PropTypes from "prop-types";
 
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      label: '',
+      label: "",
     };
   }
 
   // eslint-disable-next-line class-methods-use-this
   wannaChange = (e) => {
     const windowWithNewLabel = e.target.parentNode.firstChild.firstChild;
-    windowWithNewLabel.classList.toggle('hidden');
+    windowWithNewLabel.classList.toggle("hidden");
   };
 
   onLabelChange = (e) => {
@@ -29,26 +29,25 @@ export default class Task extends React.Component {
     const { label } = this.state;
     changeItem(label);
     this.setState({
-      label: '',
+      label: "",
     });
-    e.target.classList.toggle('hidden');
+    e.target.classList.toggle("hidden");
   };
 
   render() {
-    const {
-      label, destroyItem, onToggleDone, done,
-    } = this.props;
-    let classNames = 'description';
+    const { label, destroyItem, onToggleDone, done } = this.props;
+    let classNames = "description";
     if (done) {
-      classNames += ' done';
+      classNames += " done";
     }
     return (
       <div>
-        <div
-          className="view"
-        >
+        <div className="view">
           <form onSubmit={this.onSubmit}>
-            <input onChange={this.onLabelChange} className="edit-window hidden" />
+            <input
+              onChange={this.onLabelChange}
+              className="edit-window hidden"
+            />
           </form>
           <input
             className="toggle"
@@ -83,10 +82,10 @@ export default class Task extends React.Component {
 }
 
 Task.defaultProps = {
-  label: '',
-  destroyItem: (() => {}),
+  label: "",
+  destroyItem: () => {},
   changeItem: () => {},
-  onToggleDone: (() => {}),
+  onToggleDone: () => {},
   done: false,
 };
 

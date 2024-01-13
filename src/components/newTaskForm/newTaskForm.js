@@ -1,12 +1,12 @@
-import React from 'react';
-import './newTaskForm.css';
-import PropTypes from 'prop-types';
+import React from "react";
+import "./newTaskForm.css";
+import PropTypes from "prop-types";
 
 export default class NewTaskForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      label: '',
+      label: "",
     };
   }
 
@@ -22,7 +22,7 @@ export default class NewTaskForm extends React.Component {
     const { label } = this.state;
     sendNewTaskForm(label);
     this.setState({
-      label: '',
+      label: "",
     });
   };
 
@@ -31,9 +31,7 @@ export default class NewTaskForm extends React.Component {
     return (
       <header className="header">
         <h1>todos</h1>
-        <form
-          onSubmit={this.onSubmit} /* при отправке */
-        >
+        <form onSubmit={this.onSubmit} /* при отправке */>
           <input
             className="new-todo"
             placeholder="What needs to be done?"
@@ -48,7 +46,7 @@ export default class NewTaskForm extends React.Component {
 }
 
 NewTaskForm.defaultProps = {
-  sendNewTaskForm: (() => {}),
+  sendNewTaskForm: () => {},
 };
 
 NewTaskForm.propTypes = {

@@ -1,11 +1,9 @@
-import React from 'react';
-import './taskList.css';
-import PropTypes from 'prop-types';
-import Task from '../task';
+import React from "react";
+import "./taskList.css";
+import PropTypes from "prop-types";
+import Task from "../task";
 
-function TaskList({
-  todos, destroyItem, changeItem, onToggleDone,
-}) {
+function TaskList({ todos, destroyItem, changeItem, onToggleDone }) {
   const elements = todos.map(({ id, ...anotherProps }) => (
     <li key={id}>
       <Task
@@ -19,11 +17,7 @@ function TaskList({
     </li>
   ));
 
-  return (
-    <ul className="todo-list">
-      {elements}
-    </ul>
-  );
+  return <ul className="todo-list">{elements}</ul>;
 }
 
 TaskList.defaultProps = {
