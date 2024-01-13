@@ -1,33 +1,33 @@
-import React from "react";
-import "./newTaskForm.css";
-import PropTypes from "prop-types";
+import React from 'react'
+import './newTaskForm.css'
+import PropTypes from 'prop-types'
 
 export default class NewTaskForm extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      label: "",
-    };
+      label: '',
+    }
   }
 
   onLabelChange = (e) => {
     this.setState({
       label: e.target.value,
-    });
-  };
+    })
+  }
 
   onSubmit = (e) => {
-    e.preventDefault();
-    const { sendNewTaskForm } = this.props; // Деструктуризация
-    const { label } = this.state;
-    sendNewTaskForm(label);
+    e.preventDefault()
+    const { sendNewTaskForm } = this.props // Деструктуризация
+    const { label } = this.state
+    sendNewTaskForm(label)
     this.setState({
-      label: "",
-    });
-  };
+      label: '',
+    })
+  }
 
   render() {
-    const { label } = this.state;
+    const { label } = this.state
     return (
       <header className="header">
         <h1>todos</h1>
@@ -41,14 +41,14 @@ export default class NewTaskForm extends React.Component {
           />
         </form>
       </header>
-    );
+    )
   }
 }
 
 NewTaskForm.defaultProps = {
   sendNewTaskForm: () => {},
-};
+}
 
 NewTaskForm.propTypes = {
   sendNewTaskForm: PropTypes.func,
-};
+}

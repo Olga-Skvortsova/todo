@@ -1,6 +1,6 @@
-import React from "react";
-import "./tasksFilter.css";
-import PropTypes from "prop-types";
+import React from 'react'
+import './tasksFilter.css'
+import PropTypes from 'prop-types'
 
 function TasksFilter({ allFilter, activeFilter, competedFilter }) {
   return (
@@ -15,19 +15,19 @@ function TasksFilter({ allFilter, activeFilter, competedFilter }) {
         Completed
       </button>
     </li>
-  );
+  )
 }
 
 TasksFilter.defaultProps = {
   allFilter: () => {},
   activeFilter: () => {},
   competedFilter: () => {},
-};
+}
 
 TasksFilter.propTypes = {
   allFilter: PropTypes.func,
   activeFilter: PropTypes.func,
   competedFilter: PropTypes.func,
-};
+}
 
-export default TasksFilter;
+export default TasksFilter

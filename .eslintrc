@@ -8,7 +8,7 @@
   "parserOptions": { 
     "ecmaFeatures": { "jsx": true }, 
     "ecmaVersion": "latest", 
-    "sourceType": "module" 
+    "sourceType": "module"
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
