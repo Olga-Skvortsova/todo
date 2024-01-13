@@ -6,7 +6,6 @@ import TaskList from '../taskList';
 import Footer from '../footer';
 
 function App() {
-  /* здесь используется useState. allTasks создается, а setAllTasks изменяет allTasks */
   const [allTasks, setAllTasks] = useState([]);
   useEffect(() => { /* отслеживает изменения useEffect */
     console.log('allTasks изменился:', allTasks);
