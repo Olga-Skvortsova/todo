@@ -16,7 +16,6 @@ export default class App extends React.Component {
   addNewTaskForm = (label) => {
     const el = this.createTodoItem(label);
     this.setState(({ todoData, noFiltertodoData }) => {
-      /* устанавливается новый стейт */
       const newArr = [
         ...todoData,
         el,
