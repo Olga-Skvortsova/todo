@@ -1,38 +1,54 @@
-import React, { useEffect } from 'react';
-import './newTaskForm.css';
-import { formatDistanceToNow } from 'date-fns';
+import React from "react";
+import "./newTaskForm.css";
+import PropTypes from "prop-types";
 
-function NewTaskForm(props) {
-  useEffect(() => {
-    const InputNewTodo = document.getElementById('new-todo');
-
-    function sendInput(e) {
-      if (e.keyCode === 13) {
-        console.log('sendInput работает');
-        if (InputNewTodo.value) {
-          props.addTask({
-            value: InputNewTodo.value,
-            timeOfCreating: formatDistanceToNow(new Date, { addSuffix: true }),
-            important: true,
-          }); /* вызывается функция addTask, которая передает значение InputNewTodo.value, потом это value записывается как новое значение, добавляется к старым, обновляется allTasks */
-          InputNewTodo.value = ''; // Очищаем поле ввода после добавления задачи
-        }
-      }
-    }
-
-    InputNewTodo.addEventListener('keyup', sendInput);
-
-    return () => {
-      InputNewTodo.removeEventListener('keyup', sendInput);
+export default class NewTaskForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      label: "",
     };
-  }, [props.addTask]);
+  }
 
-  return (
-    <header className="header">
-      <h1>todos</h1>
-      <input className="new-todo" placeholder="What needs to be done?" autoFocus id="new-todo" />
-    </header>
-  );
+  onLabelChange = (e) => {
+    this.setState({
+      label: e.target.value,
+    });
+  };
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    const { sendNewTaskForm } = this.props; // Деструктуризация
+    const { label } = this.state;
+    sendNewTaskForm(label);
+    this.setState({
+      label: "",
+    });
+  };
+
+  render() {
+    const { label } = this.state;
+    return (
+      <header className="header">
+        <h1>todos</h1>
+        <form onSubmit={this.onSubmit} /* при отправке */>
+          <input
+            className="new-todo"
+            placeholder="What needs to be done?"
+            id="new-todo"
+            onChange={this.onLabelChange}
+            value={label}
+          />
+        </form>
+      </header>
+    );
+  }
 }
 
-export default NewTaskForm;
+NewTaskForm.defaultProps = {
+  sendNewTaskForm: () => {},
+};
+
+NewTaskForm.propTypes = {
+  sendNewTaskForm: PropTypes.func,
+};

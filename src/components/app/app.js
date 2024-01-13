@@ -1,32 +1,178 @@
-// Модуль 1
-import React, { useState, useEffect } from 'react';
-import './app.css';
-import NewTaskForm from '../newTaskForm';
-import TaskList from '../taskList';
-import Footer from '../footer';
 
-function App() {
-  const [allTasks, setAllTasks] = useState([]);
-  useEffect(() => { /* отслеживает изменения useEffect */
-    console.log('allTasks изменился:', allTasks);
-  }, [allTasks]);
+import React from "react";
+import "./app.css";
+import NewTaskForm from "../newTaskForm";
+import TaskList from "../taskList";
+import Footer from "../footer";
 
-  /* функция addTask, вызываться будет в NewTaskForm.
-    Она заново создает allTasks, куда записывает предыдущее значение и добавляет новое */
-  const addTask = (newTask) => {
-    /* setAllTasks - функция, которая отвечает за изменение allTasks */
-    setAllTasks((prevTasks) => [...prevTasks, newTask]);
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoData: [],
+      noFiltertodoData: [],
+    };
+  }
+
+  addNewTaskForm = (label) => {
+    const el = this.createTodoItem(label);
+    this.setState(({ todoData, noFiltertodoData }) => {
+      /* устанавливается новый стейт */
+      const newArr = [
+        ...todoData,
+        el,
+      ]; /* новый стейт это старый стейт + новый элемент */
+      return {
+        todoData: newArr,
+        noFiltertodoData: newArr,
+      };
+    });
   };
 
-  return (
-    <section className="todoapp">
-      <NewTaskForm addTask={addTask} />
-      <section className="main">
-        <TaskList allTasks={allTasks} />
-        <Footer />
-      </section>
-    </section>
-  );
-}
+  deleteItem = (id) => {
+    /* получает в TaskList id элемента */
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const index = todoData.findIndex((el) => el.id === id);
+      const before = todoData.slice(
+        0,
+        index,
+      ); /* создается массив из элементов до удаленного */
+      const after = todoData.slice(
+        index + 1,
+      ); /* создается массив после удаленного */
+      const newArray = [...before, ...after];
+      return {
+        todoData: newArray /* возвращается в state новый массив todoData */,
+        noFiltertodoData: newArray,
+      };
+    });
+  };
 
-export default App;
+  changeItem = (id, label2) => {
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const index = noFiltertodoData.findIndex((el) => el.id === id);
+      const el = todoData.filter((elem) => elem.id === id);
+      const newItem = {
+        ...el[0],
+        label: label2,
+      };
+      const before = noFiltertodoData.slice(0, index);
+      const after = noFiltertodoData.slice(
+        index + 1,
+      ); /* создается массив после удаленного */
+      const newArray = [...before, newItem, ...after];
+      return {
+        todoData: newArray /* возвращается в state новый массив todoData */,
+        noFiltertodoData: newArray,
+      };
+    });
+  };
+
+  deleteAllFilter = () => {
+    this.setState(({ todoData, noFiltertodoData }) => {
+      let newArray = [...todoData];
+      newArray = noFiltertodoData.filter((el) => !el.done);
+      return {
+        todoData: newArray /* возвращается в state новый массив todoData */,
+        noFiltertodoData: newArray,
+      };
+    });
+  };
+
+  onToggleDone = (id) => {
+    /* изменяет done */
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const index = todoData.findIndex((el) => el.id === id);
+      const oldItem = todoData[index];
+      const newItem = {
+        ...oldItem,
+        done: !oldItem.done,
+      };
+      const before = todoData.slice(0, index);
+      const after = todoData.slice(index + 1);
+      const newArray = [...before, newItem, ...after];
+      return {
+        todoData: newArray,
+        noFiltertodoData: newArray,
+      };
+    });
+  };
+
+  allFilter = () => {
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.add("selected");
+    allFilters[1].classList.remove("selected");
+    allFilters[2].classList.remove("selected");
+
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const newArr = structuredClone(noFiltertodoData);
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  activeFilter = () => {
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.remove("selected");
+    allFilters[1].classList.add("selected");
+    allFilters[2].classList.remove("selected");
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const activeFiltered = noFiltertodoData.filter((el) => !el.done);
+      return {
+        todoData: activeFiltered,
+      };
+    });
+  };
+
+  competedFilter = () => {
+    const allFilters =
+      document.getElementsByClassName("filters")[0].children[0].childNodes;
+    allFilters[0].classList.remove("selected");
+    allFilters[1].classList.remove("selected");
+    allFilters[2].classList.add("selected");
+    this.setState(({ todoData, noFiltertodoData }) => {
+      const competedFilter = noFiltertodoData.filter((el) => el.done);
+      return {
+        todoData: competedFilter,
+      };
+    });
+  };
+
+  createTodoItem(label) {
+    return {
+      label,
+      done: false,
+      id: Math.random().toString(36).slice(2),
+    };
+  }
+
+  render() {
+    const { todoData, noFiltertodoData } = this.state;
+    const todoCount =
+      noFiltertodoData.length - noFiltertodoData.filter((el) => el.done).length;
+
+    return (
+      <section className="todoapp">
+        <NewTaskForm sendNewTaskForm={this.addNewTaskForm} />
+        <section className="main">
+          <TaskList
+            todos={todoData}
+            destroyItem={this.deleteItem}
+            changeItem={this.changeItem}
+            onToggleDone={this.onToggleDone}
+          />
+          <Footer
+            left={todoCount}
+            allFilter={this.allFilter}
+            activeFilter={this.activeFilter}
+            competedFilter={this.competedFilter}
+            deleteAllFilter={this.deleteAllFilter}
+          />
+        </section>
+      </section>
+    );
+  }
+}

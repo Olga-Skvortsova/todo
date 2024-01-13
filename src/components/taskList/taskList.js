@@ -1,22 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import './taskList.css';
-import Task from '../task';
+import React from "react";
+import "./taskList.css";
+import PropTypes from "prop-types";
+import Task from "../task";
 
-function TaskList(props) {
-  const [renderedTasks, setRenderedTasks] = useState([]); /* создается renderedTasks, в котором пусой массив и setRenderedTasks, который изменяет этот массив */
+function TaskList({ todos, destroyItem, changeItem, onToggleDone }) {
+  const elements = todos.map(({ id, ...anotherProps }) => (
+    <li key={id}>
+      <Task
+        /* eslint-disable react/jsx-props-no-spreading */
+        {...anotherProps}
+        destroyItem={() => destroyItem(id)}
+        changeItem={(label) => changeItem(id, label)}
+        onToggleDone={() => onToggleDone(id)}
+        id={id}
+      />
+    </li>
+  ));
 
-  useEffect(() => {
-    const tasksComponents = props.allTasks.map((el, index) => (/* создается массив tasksComponents, который проходит по массиву allTasks, получает оттуда task и индекс task. */
-      <Task key={index} allTasks={el} /> /* создается элемент Task, в который записывается ключ и в который передается task */
-    ));
-    setRenderedTasks(tasksComponents);
-  }, [props.allTasks]);
-
-  return (
-    <ul className="todo-list">
-      {renderedTasks}
-    </ul>
-  );
+  return <ul className="todo-list">{elements}</ul>;
 }
+
+TaskList.defaultProps = {
+  todos: [],
+  destroyItem: () => {},
+  changeItem: () => {},
+  onToggleDone: () => {},
+};
+
+TaskList.propTypes = {
+  todos: PropTypes.instanceOf(Array),
+  destroyItem: PropTypes.func,
+  changeItem: PropTypes.func,
+  onToggleDone: PropTypes.func,
+};
 
 export default TaskList;
