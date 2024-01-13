@@ -1,8 +1,11 @@
-
 import React from "react";
+
 import "./app.css";
+
 import NewTaskForm from "../newTaskForm";
+
 import TaskList from "../taskList";
+
 import Footer from "../footer";
 
 export default class App extends React.Component {
