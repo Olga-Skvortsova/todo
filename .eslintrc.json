@@ -16,7 +16,8 @@
       "jsx": true
     },
     "ecmaVersion": 12,
-    "sourceType": "module"
+    "sourceType": "module",
+    "requireConfigFile": false
   },
   "plugins": ["react", "prettier", "import"],
   "parser": "@babel/eslint-parser",
@@ -27,7 +28,7 @@
     "quotes": ["error", "single"],
     "semi": ["error", "never"],
     "react/react-in-jsx-scope": "off",
-    "no-unused-vars":"off",
+    "no-unused-vars": "off",
     "react/prop-types": 0,
     "import/no-unresolved": [2, { "caseSensitive": false }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
@@ -40,6 +41,9 @@
     ]
   },
   "settings": {
+    "react": {
+      "version": "detect"
+    },
     "import/resolver": {
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"],
