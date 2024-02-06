@@ -51,6 +51,11 @@ export default class Task extends React.Component {
             <span id="labelTask" className={classNames}>
               {label}
             </span>
+            <span className="description">
+              <button className="icon icon-play"></button>
+              <button className="icon icon-pause"></button>
+              12:23
+            </span>
             <span id="labelTask" className="created">
               {formatDistanceToNow(new Date())}
             </span>
