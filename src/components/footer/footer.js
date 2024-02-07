@@ -1,20 +1,37 @@
-import React from 'react';
-import './footer.css';
-import TasksFilter from '../tasksFilter';
+import React from 'react'
+import './footer.css'
+import PropTypes from 'prop-types'
 
-function Footer() {
+import TasksFilter from '../tasksFilter'
+
+function Footer({ left, allFilter, activeFilter, competedFilter, deleteAllFilter }) {
   return (
     <footer className="footer">
-      <span className="todo-count">
-        {' '}
-        {/* добавить сколько задач добавлено */}
-      </span>
+      <span className="todo-count">{left} item left</span>
       <ul className="filters">
-        <TasksFilter />
+        <TasksFilter allFilter={allFilter} activeFilter={activeFilter} competedFilter={competedFilter} />
       </ul>
-      <button type="button" className="clear-completed">Clear completed</button>
+      <button type="button" className="clear-completed" onClick={deleteAllFilter}>
+        Clear completed
+      </button>
     </footer>
-  );
+  )
 }
 
-export default Footer;
+Footer.defaultProps = {
+  left: 0,
+  allFilter: () => {},
+  activeFilter: () => {},
+  competedFilter: () => {},
+  deleteAllFilter: () => {},
+}
+
+Footer.propTypes = {
+  left: PropTypes.number,
+  allFilter: PropTypes.func,
+  activeFilter: PropTypes.func,
+  competedFilter: PropTypes.func,
+  deleteAllFilter: PropTypes.func,
+}
+
+export default Footer
