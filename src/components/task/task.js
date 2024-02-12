@@ -1,114 +1,92 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import './task.css'
 import { formatDistanceToNow } from 'date-fns'
 import PropTypes from 'prop-types'
 
-export default class Task extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      label: '',
-      prevTimeIsGoing: null,
+export default function Task ( { destroyItem, changeItem, onToggleDone, startTimer, stopTimer, updateTimer, id, time, timeIsGoing, done, labelFromProps } ) {
+  const [label, setLabel] = useState(labelFromProps)
+  const newInput = useRef(null)
+  const [isEditing, setIsEditing] = useState(false);
+
+  let classNames = 'description'
+  if (done) {
+    classNames += ' done'
+    console.log('done')
+  }
+  const minutes = (Math.floor(time / 60)).toString().padStart(2, "0")
+  const seconds = (time - minutes * 60).toString().padStart(2, "0")
+
+  const handleClick = (e) => {
+    if (newInput.current && !newInput.current.contains(e.target)) {
+      if (newInput.current.className === 'edit-window ') {
+        setIsEditing(false)
+      }
     }
-    this.interval = null
   }
 
-  componentDidMount() {
-    console.log('componentDidMount')
-    this.startTimer(this.props.id);
-  }
-
-  componentDidUpdate() {
-    const { timeIsGoing } = this.props;
-    const { prevTimeIsGoing } = this.state;
-
-    if (timeIsGoing && !prevTimeIsGoing) {
-      console.log('if выполняется');
-      this.interval = setInterval(() => {
-        if (this.props.time > 0) {
-          this.props.updateTimer(this.props.id);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClick)
+    const interval = setInterval(() => {
+      if (timeIsGoing) {
+        if (time >= 1) {
+          updateTimer(id);
         } else {
-          clearInterval(this.interval); // Stop the interval when time <= 0
+          clearInterval(interval);
         }
-      }, 1000);
-    } else if (!timeIsGoing && prevTimeIsGoing) {
-      clearInterval(this.interval);
+      }
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('mousedown', handleClick)
     }
-    if (timeIsGoing !== prevTimeIsGoing) {
-      this.setState({ prevTimeIsGoing: timeIsGoing });
-    }
+  }, [timeIsGoing])
+
+  const wannaChange = () => {
+    setIsEditing(!isEditing)
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
+  const onLabelChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  wannaChange = (e) => {
-    const windowWithNewLabel = e.target.parentNode.firstChild.firstChild
-    windowWithNewLabel.classList.toggle('hidden')
-  }
+  const onSubmit = (e) => {
+    e.preventDefault();
+    changeItem(label);
+    setIsEditing(false);
+  };
 
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  onSubmit = (e) => {
-    e.preventDefault()
-    const { changeItem } = this.props // Деструктуризация
-    const { label } = this.state
-    changeItem(label)
-    this.setState({
-      label: '',
-    })
-    e.target.classList.toggle('hidden')
-  }
-
-  startTimer = () => {
-    this.props.startTimer(this.props.id);
-  }
-  stopTimer = () => {
-    this.props.stopTimer(this.props.id);
-  }
-
-  render() {
-    const { label, destroyItem, onToggleDone, done } = this.props
-    let classNames = 'description'
-    const minutes = (Math.floor(this.props.time / 60)).toString().padStart(2, "0")
-    const seconds = (this.props.time - minutes * 60).toString().padStart(2, "0")
-    if (done) {
-      classNames += ' done'
-    }
-    return (
-      <div>
-        <div className="view">
-          <form onSubmit={this.onSubmit}>
-            <input onChange={this.onLabelChange} className="edit-window hidden" />
-          </form>
-          <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
-          <label htmlFor="labelTask">
-            <span id="labelTask" className={classNames}>
-              {label}
-            </span>
-            <span className="description">
-              <button onClick={this.startTimer} className="icon icon-play"></button>
-              <button onClick={this.stopTimer} className="icon icon-pause"></button>
-              <span>{minutes}</span>
-              <span>:</span>
-              <span>{seconds}</span>
-            </span>
-            <span id="labelTask" className="created">
-              {formatDistanceToNow(new Date())}
-            </span>
-          </label>
-          <button type="button" alt="icon-edit" className="icon icon-edit" onClick={this.wannaChange} />
-          <button type="button" alt="icon-destroy" className="icon icon-destroy" onClick={destroyItem} />
-        </div>
+  return (
+    <div>
+      <div className="view">
+        <form onSubmit={onSubmit}>
+        <input
+          ref={newInput}
+          onChange={onLabelChange}
+          value={label}
+          className={`edit-window ${isEditing ? '' : 'hidden'}`}
+        />
+        </form>
+        <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
+        <label htmlFor="labelTask">
+          <span id="labelTask" className={classNames}>
+            {labelFromProps}
+          </span>
+          <span className="description">
+            <button onClick={() => {startTimer(id)}} className="icon icon-play"></button>
+            <button onClick={() => {stopTimer(id)}} className="icon icon-pause"></button>
+            <span>{minutes}</span>
+            <span>:</span>
+            <span>{seconds}</span>
+          </span>
+          <span id="labelTask" className="created">
+            {formatDistanceToNow(new Date())}
+          </span>
+        </label>
+        <button type="button" alt="icon-edit" className="icon icon-edit" onClick={wannaChange} />
+        <button type="button" alt="icon-destroy" className="icon icon-destroy" onClick={destroyItem} />
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 Task.defaultProps = {
