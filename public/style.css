@@ -61,6 +61,10 @@ body {
   font-weight: lighter;
 }
 
+.opacity {
+	opacity: 0;
+}
+
 .hidden {
   display: none;
 }

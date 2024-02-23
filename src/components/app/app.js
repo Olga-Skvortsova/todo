@@ -54,8 +54,8 @@ export default function App () {
     allFilters[0].classList.remove('selected')
     allFilters[1].classList.add('selected')
     allFilters[2].classList.remove('selected')
-    const activeFiltered = noFiltertodoData.filter((el) => !el.done)
-    setTodoData(activeFiltered)
+    const newArr = (arr) => arr.map((el) => (el.done === true ? { ...el, display: false } : { ...el, display: true }));
+    setTodoData((noFiltertodoData) => newArr(noFiltertodoData));
   }
 
   const competedFilter = () => {
@@ -64,8 +64,8 @@ export default function App () {
     allFilters[1].classList.remove('selected')
     allFilters[2].classList.add('selected')
 
-    const competedFilter = noFiltertodoData.filter((el) => el.done)
-    setTodoData(competedFilter)
+    const newArr = (arr) => arr.map((el) => (el.done === true ? { ...el, display: true } : { ...el, display: false }));
+    setTodoData((noFiltertodoData) => newArr(noFiltertodoData));
   }
   
   const createTodoItem = (label, minutes, seconds) => {
@@ -75,6 +75,8 @@ export default function App () {
       done: false,
       timeIsGoing: true,
       id: Math.random().toString(36).slice(2),
+      timerHasWorked: false,
+      display: true,
     };
   };
 
