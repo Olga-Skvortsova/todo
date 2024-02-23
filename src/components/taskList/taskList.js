@@ -21,6 +21,7 @@ function TaskList({ todos, destroyItem, changeItem, onToggleDone, startTimer, st
         timeIsGoing={anotherProps.timeIsGoing}
         done={anotherProps.done}
         labelFromProps={anotherProps.label}
+        display={anotherProps.display}
       />
     </li>
   ))

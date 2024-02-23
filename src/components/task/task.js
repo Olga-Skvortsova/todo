@@ -3,15 +3,15 @@ import './task.css'
 import { formatDistanceToNow } from 'date-fns'
 import PropTypes from 'prop-types'
 
-export default function Task ( { destroyItem, changeItem, onToggleDone, startTimer, stopTimer, updateTimer, id, time, timeIsGoing, done, labelFromProps } ) {
+export default function Task ( { destroyItem, changeItem, onToggleDone, startTimer, stopTimer, updateTimer, id, time, timeIsGoing, done, labelFromProps, display } ) {
   const [label, setLabel] = useState(labelFromProps)
   const newInput = useRef(null)
   const [isEditing, setIsEditing] = useState(false);
+  const needToHidden = useRef(null)
 
   let classNames = 'description'
   if (done) {
     classNames += ' done'
-    console.log('done')
   }
   const minutes = (Math.floor(time / 60)).toString().padStart(2, "0")
   const seconds = (time - minutes * 60).toString().padStart(2, "0")
@@ -20,12 +20,23 @@ export default function Task ( { destroyItem, changeItem, onToggleDone, startTim
     if (newInput.current && !newInput.current.contains(e.target)) {
       if (newInput.current.className === 'edit-window ') {
         setIsEditing(false)
+        setLabel(labelFromProps); // Сбросить label к исходному значению
+      }
+    }
+  }
+
+  const escapeFunc = (e) => {
+    if (e.code === "Escape") {
+      if (newInput.current.className === 'edit-window ') {
+        setIsEditing(false)
+        setLabel(labelFromProps); // Сбросить label к исходному значению
       }
     }
   }
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', escapeFunc)
     const interval = setInterval(() => {
       if (timeIsGoing) {
         if (time >= 1) {
@@ -39,14 +50,26 @@ export default function Task ( { destroyItem, changeItem, onToggleDone, startTim
       clearInterval(interval)
       document.removeEventListener('mousedown', handleClick)
     }
+  // eslint-disable-next-line
   }, [timeIsGoing])
 
+  useEffect(() => {
+    if (!display) {
+      needToHidden.current.classList.add('hidden')
+    } else {
+      needToHidden.current.classList.remove('hidden')
+    }
+  }, [display])
+
   const wannaChange = () => {
-    setIsEditing(!isEditing)
+    setIsEditing(!isEditing);
+    if (!isEditing) {
+      setLabel(labelFromProps);
+    }
   }
 
   const onLabelChange = (e) => {
-    setLabel(e.target.value)
+    setLabel(e.target.value);
   }
 
   const onSubmit = (e) => {
@@ -56,7 +79,7 @@ export default function Task ( { destroyItem, changeItem, onToggleDone, startTim
   };
 
   return (
-    <div>
+    <div ref={needToHidden}>
       <div className="view">
         <form onSubmit={onSubmit}>
         <input
